@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stacks/artifact@1",
+  "title": "Stacks artifact manifest, v1",
+  "description": "Describes one published artifact bundle: what it is, why it exists, how it was produced, how far to trust it, and which file to read for what. A consuming agent should read this manifest before any other file in the bundle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "slug", "title", "type", "purpose", "summary", "status", "version", "created", "method", "confidence", "files", "license"],
+  "properties": {
+    "schema": { "const": "stacks/artifact@1" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "Stable identifier; equals the bundle directory name." },
+    "title": { "type": "string", "minLength": 1 },
+    "type": {
+      "enum": ["research", "analysis", "framework", "taxonomy", "threat-model", "decision-record", "diagram", "dataset", "prompt", "reference"],
+      "description": "The artifact's kind. 'research' gathers evidence; 'analysis' argues from it; 'framework' and 'taxonomy' organize a domain; 'decision-record' captures a choice and why."
+    },
+    "purpose": { "type": "string", "minLength": 1, "description": "The question this artifact answers or the job it does. Intent, not contents." },
+    "summary": { "type": "string", "minLength": 1, "description": "The conclusion or contents in a few sentences, readable without opening any file." },
+    "audience": { "type": "string", "description": "Who or what it was written for, e.g. 'agents planning an LLM red-team engagement'." },
+    "status": { "enum": ["draft", "stable", "superseded", "retracted"] },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Semver. Major = a conclusion changed; minor = material added; patch = corrections." },
+    "created": { "type": "string", "format": "date" },
+    "updated": { "type": "string", "format": "date" },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "covers": { "type": "array", "items": { "type": "string" } },
+        "excludes": { "type": "array", "items": { "type": "string" }, "description": "What it deliberately does not address, so a consumer doesn't infer silence as absence." }
+      }
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary"],
+      "properties": {
+        "summary": { "type": "string", "description": "How it was produced, in a sentence or two." },
+        "steps": { "type": "array", "items": { "type": "string" } },
+        "agents": { "type": "string", "description": "Generic description of any multi-agent process, e.g. '5-perspective debate, 3 rounds'. No model or tool account identifiers." }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level"],
+      "properties": {
+        "level": { "enum": ["high", "medium", "low", "speculative"] },
+        "limitations": { "type": "array", "items": { "type": "string" } },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "description": "The load-bearing claims, each tied to its support. Lets a consumer check the spine without reading everything.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "confidence"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^C\\d+$" },
+          "statement": { "type": "string" },
+          "confidence": { "enum": ["high", "medium", "low", "speculative"] },
+          "sources": { "type": "array", "items": { "type": "string", "pattern": "^S\\d+$" }, "description": "Source ids from sources[]." },
+          "decision": { "type": "string", "pattern": "^D\\d+$", "description": "Decision id from decisions[] that settled it, if any." }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "kind"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S\\d+$" },
+          "title": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "kind": { "enum": ["paper", "standard", "documentation", "article", "talk", "dataset", "code", "book", "other"] },
+          "author": { "type": "string" },
+          "published": { "type": "string" },
+          "accessed": { "type": "string", "format": "date" },
+          "used_for": { "type": "string", "description": "What this source supports in the artifact." },
+          "reliability": { "enum": ["primary", "secondary", "opinion"] }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "description": "Deliberations that shaped the artifact (e.g. structured debates). Record the question, the outcome, why, and the strongest dissent.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "outcome", "rationale"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^D\\d+$" },
+          "question": { "type": "string" },
+          "outcome": { "type": "string" },
+          "rationale": { "type": "string" },
+          "dissent": { "type": "string", "description": "The best argument that lost, kept so a consumer can reopen the question." },
+          "alternatives": { "type": "array", "items": { "type": "string" } },
+          "file": { "type": "string", "description": "Bundle path of the full deliberation record, if published." }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Every file in the bundle except artifact.json. Order is the suggested reading order.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "role", "description"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*\\.(md|txt|json|jsonl|csv|yaml|yml|mmd|svg)$" },
+          "role": { "enum": ["primary", "appendix", "sources", "deliberation", "diagram", "data", "prompt", "example"] },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "related": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slug", "relation"],
+        "properties": {
+          "slug": { "type": "string" },
+          "relation": { "enum": ["supersedes", "superseded-by", "extends", "depends-on", "contradicts", "related"] }
+        }
+      }
+    },
+    "tags": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } },
+    "license": { "type": "string", "description": "SPDX identifier, e.g. CC-BY-4.0." }
+  }
+}

@@ -2,10 +2,9 @@
 //  1. Built-in patterns (secrets, local paths, private addresses), committed here, safe to be public.
 //  2. A personal term denylist at ~/.config/stacks/denylist.txt, deliberately NOT in this repo,
 //     because a public list of forbidden words publishes the words.
-// `bun run check` scans everything in content/; publish.ts runs it per file.
+// bundle.ts runs it over every file in a bundle, artifact.json included.
 import { join } from "node:path";
 import { homedir } from "node:os";
-import { readdir } from "node:fs/promises";
 
 export type Finding = { line: number; rule: string; excerpt: string };
 
@@ -20,6 +19,9 @@ const BUILT_IN: [string, RegExp][] = [
   ["jwt", /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/],
   ["local-home-path", /\/Users\/[a-z0-9._-]+\/|\/home\/[a-z0-9._-]+\//i],
   ["private-ipv4", /\b(10\.\d{1,3}|192\.168|172\.(1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b/],
+  ["email-address", /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/],
+  // Artifacts speak about a topic in general terms, never from inside an organization.
+  ["workplace-reference", /\b(our|my) (team|teams|org|organization|company|employer|bank|firm|ciso|cto|manager|boss|leadership|security org|environment|stack)\b|\b(at work|internally|in-house|my job|our customers)\b/i],
 ];
 
 const DENYLIST = process.env.STACKS_DENYLIST ?? join(homedir(), ".config", "stacks", "denylist.txt");
@@ -50,17 +52,4 @@ export async function guard(text: string): Promise<Finding[]> {
     }
   });
   return findings;
-}
-
-if (import.meta.main) {
-  const dir = join(import.meta.dir, "..", "content");
-  const hasPersonal = await Bun.file(DENYLIST).exists();
-  let total = 0;
-  for (const f of (await readdir(dir)).filter((f) => f.endsWith(".md"))) {
-    const findings = await guard(await Bun.file(join(dir, f)).text());
-    for (const x of findings) console.error(`content/${f}:${x.line}: ${x.rule} → ${x.excerpt}`);
-    total += findings.length;
-  }
-  console.log(`guard: ${total} finding(s)${hasPersonal ? "" : " (built-in rules only; no personal denylist found)"}`);
-  process.exit(total ? 2 : 0);
 }

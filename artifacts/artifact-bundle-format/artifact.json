@@ -1,0 +1,57 @@
+{
+  "schema": "stacks/artifact@1",
+  "slug": "artifact-bundle-format",
+  "title": "The artifact bundle format",
+  "type": "reference",
+  "purpose": "Explain how artifacts on this site are packaged, so a consuming agent can interpret any bundle's intent, provenance and reliability before reading its contents.",
+  "summary": "Each artifact is a directory of plain-text files with a JSON manifest. The manifest carries purpose, scope, method, confidence, load-bearing claims linked to sources and decisions, and a role for every file. Agents should read the manifest first and weigh content by its stated confidence.",
+  "audience": "Agents and developers consuming artifacts from this site",
+  "status": "stable",
+  "version": "1.0.0",
+  "created": "2026-10-15",
+  "scope": {
+    "covers": ["Bundle layout", "Manifest fields and their intent", "How to consume a bundle"],
+    "excludes": ["The content of any particular artifact", "How artifacts are researched or produced"]
+  },
+  "method": {
+    "summary": "Designed from the questions a consuming agent has to answer before it can trust an unfamiliar document: what is this for, how was it made, how sure is it, and what did it deliberately leave out.",
+    "steps": [
+      "Listed the questions a consumer needs answered before reading",
+      "Mapped each question to a manifest field",
+      "Aligned the site index with the llms.txt convention"
+    ]
+  },
+  "confidence": {
+    "level": "high",
+    "limitations": ["Schema v1; fields may be added in later minor versions"],
+    "open_questions": ["Whether claim-level provenance is worth its authoring cost on short artifacts"]
+  },
+  "claims": [
+    { "id": "C1", "statement": "A consumer should read the manifest before any other file.", "confidence": "high", "decision": "D1" },
+    { "id": "C2", "statement": "The site entry point follows the llms.txt convention.", "confidence": "high", "sources": ["S1"] },
+    { "id": "C3", "statement": "Manifests are validated against a JSON Schema 2020-12 document published alongside them.", "confidence": "high", "sources": ["S2"] },
+    { "id": "C4", "statement": "Version numbers follow semantic versioning, with a major bump meaning a conclusion changed.", "confidence": "high", "sources": ["S3"] }
+  ],
+  "sources": [
+    { "id": "S1", "title": "The /llms.txt file", "url": "https://llmstxt.org/", "kind": "standard", "used_for": "Shape of the site entry point", "reliability": "primary" },
+    { "id": "S2", "title": "JSON Schema Draft 2020-12", "url": "https://json-schema.org/draft/2020-12", "kind": "standard", "used_for": "Manifest schema dialect", "reliability": "primary" },
+    { "id": "S3", "title": "Semantic Versioning 2.0.0", "url": "https://semver.org/", "kind": "standard", "used_for": "Version field meaning", "reliability": "primary" }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "question": "Should intent and provenance live in a separate manifest or in frontmatter of the main document?",
+      "outcome": "A separate JSON manifest.",
+      "rationale": "Multi-file bundles need one place that describes every file. JSON validates against a schema and parses without a Markdown library.",
+      "dissent": "Frontmatter keeps everything in one file and is easier to author for single-document artifacts.",
+      "alternatives": ["YAML frontmatter in the primary file", "A sidecar YAML file"]
+    }
+  ],
+  "files": [
+    { "path": "README.md", "role": "primary", "description": "The format explained, with a consumption walkthrough." },
+    { "path": "layout.mmd", "role": "diagram", "description": "Mermaid diagram of the site and bundle layout." }
+  ],
+  "related": [],
+  "tags": ["meta", "format"],
+  "license": "CC-BY-4.0"
+}
