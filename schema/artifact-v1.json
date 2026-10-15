@@ -111,7 +111,7 @@
         "additionalProperties": false,
         "required": ["path", "role", "description"],
         "properties": {
-          "path": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*\\.(md|txt|json|jsonl|csv|yaml|yml|mmd|svg)$" },
+          "path": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*\\.(md|txt|json|jsonl|csv|yaml|yml|svg)$" },
           "role": { "enum": ["primary", "appendix", "sources", "deliberation", "diagram", "data", "prompt", "example"] },
           "description": { "type": "string" }
         }
