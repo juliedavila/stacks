@@ -16,4 +16,4 @@ Every artifact on this site is a bundle: a directory of plain-text files plus an
 
 ## File types
 
-Bundles hold text only: Markdown, plain text, JSON, JSON Lines, CSV, YAML, Mermaid and SVG.
+Bundles hold text only: Markdown, plain text, JSON, JSON Lines, CSV, YAML and SVG. Diagrams are Mermaid source inside a fenced block in a Markdown file, so they are served as `text/markdown`.

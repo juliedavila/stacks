@@ -7,8 +7,9 @@
   "summary": "Each artifact is a directory of plain-text files with a JSON manifest. The manifest carries purpose, scope, method, confidence, load-bearing claims linked to sources and decisions, and a role for every file. Agents should read the manifest first and weigh content by its stated confidence.",
   "audience": "Agents and developers consuming artifacts from this site",
   "status": "stable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "created": "2026-10-15",
+  "updated": "2026-10-15",
   "scope": {
     "covers": ["Bundle layout", "Manifest fields and their intent", "How to consume a bundle"],
     "excludes": ["The content of any particular artifact", "How artifacts are researched or produced"]
@@ -49,7 +50,7 @@
   ],
   "files": [
     { "path": "README.md", "role": "primary", "description": "The format explained, with a consumption walkthrough." },
-    { "path": "layout.mmd", "role": "diagram", "description": "Mermaid diagram of the site and bundle layout." }
+    { "path": "layout.md", "role": "diagram", "description": "Mermaid diagram (in a fenced block) of the site and bundle layout." }
   ],
   "related": [],
   "tags": ["meta", "format"],
