@@ -36,7 +36,7 @@ async function personalRules(): Promise<[string, RegExp][]> {
     .map((term) => {
       // A line wrapped in slashes is a regex; anything else is a case-insensitive literal.
       const re = term.startsWith("/") && term.lastIndexOf("/") > 0
-        ? new RegExp(term.slice(1, term.lastIndexOf("/")), term.slice(term.lastIndexOf("/") + 1) || "i")
+        ? new RegExp(term.slice(1, term.lastIndexOf("/")), term.slice(term.lastIndexOf("/") + 1))
         : new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
       return ["denylist", re] as [string, RegExp];
     });
