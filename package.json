@@ -1,0 +1,17 @@
+{
+  "name": "stacks",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun scripts/build.ts",
+    "check": "bun scripts/guard.ts",
+    "publish": "bun scripts/publish.ts",
+    "serve": "bun scripts/build.ts && bunx serve dist"
+  },
+  "dependencies": {
+    "marked": "15"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
