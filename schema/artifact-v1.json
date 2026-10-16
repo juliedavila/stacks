@@ -11,8 +11,8 @@
     "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "Stable identifier; equals the bundle directory name." },
     "title": { "type": "string", "minLength": 1 },
     "type": {
-      "enum": ["research", "analysis", "framework", "taxonomy", "threat-model", "decision-record", "diagram", "dataset", "prompt", "reference"],
-      "description": "The artifact's kind. 'research' gathers evidence; 'analysis' argues from it; 'framework' and 'taxonomy' organize a domain; 'decision-record' captures a choice and why."
+      "enum": ["research", "analysis", "framework", "taxonomy", "threat-model", "decision-record", "diagram", "dataset", "prompt", "skill", "reference"],
+      "description": "The artifact's kind. 'research' gathers evidence; 'analysis' argues from it; 'framework' and 'taxonomy' organize a domain; 'decision-record' captures a choice and why; 'skill' is agent instructions such as a SKILL.md with its references, text only."
     },
     "purpose": { "type": "string", "minLength": 1, "description": "The question this artifact answers or the job it does. Intent, not contents." },
     "summary": { "type": "string", "minLength": 1, "description": "The conclusion or contents in a few sentences, readable without opening any file." },
@@ -112,7 +112,7 @@
         "required": ["path", "role", "description"],
         "properties": {
           "path": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*\\.(md|txt|json|jsonl|csv|yaml|yml|svg)$" },
-          "role": { "enum": ["primary", "appendix", "sources", "deliberation", "diagram", "data", "prompt", "example"] },
+          "role": { "enum": ["primary", "appendix", "sources", "deliberation", "diagram", "data", "prompt", "instructions", "example"] },
           "description": { "type": "string" }
         }
       }

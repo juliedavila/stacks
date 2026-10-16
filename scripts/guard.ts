@@ -18,6 +18,8 @@ const BUILT_IN: [string, RegExp][] = [
   ["private-key", /-----BEGIN [A-Z ]*PRIVATE KEY-----/],
   ["jwt", /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/],
   ["local-home-path", /\/Users\/[a-z0-9._-]+\/|\/home\/[a-z0-9._-]+\//i],
+  ["home-relative-path", /(^|[\s`'"(=])~\/[A-Za-z0-9._-]|\$\{?HOME\}?\//],
+  ["agent-config-path", /\.claude\/(skills|agents|commands|hooks|projects)\b|\.config\/[A-Za-z0-9_-]+\//],
   ["private-ipv4", /\b(10\.\d{1,3}|192\.168|172\.(1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b/],
   ["email-address", /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/],
   // Artifacts speak about a topic in general terms, never from inside an organization.

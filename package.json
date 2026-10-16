@@ -6,7 +6,9 @@
     "build": "bun scripts/build.ts",
     "check": "bun scripts/bundle.ts",
     "new": "bun scripts/new.ts",
-    "publish": "bun scripts/publish.ts"
+    "publish": "bun scripts/publish.ts",
+    "stage": "bun scripts/stage.ts",
+    "verify": "bun scripts/verify.ts"
   },
   "dependencies": {
     "ajv": "8",

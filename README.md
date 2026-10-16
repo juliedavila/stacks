@@ -19,11 +19,14 @@ Start at `/llms.txt`. It explains how to read the site and lists every artifact.
 ## Publishing
 
 ```sh
-bun run new <slug> --type research   # scaffold artifacts/<slug>/
-# fill artifact.json and the files
-bun run check                        # schema, integrity, cross-refs, guard
-bun run publish <slug>               # check, build, commit, push
+bun run stage <slug> <file-or-dir>... --type research   # copy sources in, draft files[]; refuses code and binaries
+# sanitize the copies, fill every TODO in artifact.json
+bun run verify <slug>                # check + no TODOs + every source URL resolves
+bun run publish <slug>               # check, build, commit the bundle, push
+bun run verify <slug> --live         # every file served as text, matches local, listed in the catalog
 ```
+
+`bun run new <slug>` scaffolds an empty bundle; `bun run check` checks every bundle.
 
 GitHub Actions deploys on push. The build refuses to run if any bundle fails the check, so CI cannot deploy a bad bundle.
 
